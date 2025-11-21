@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.security.Principal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -35,6 +36,31 @@ public class RestaurantsService {
 
         return Arrays.asList(restaurants);
 
+
+
+    }
+
+    public RestaurantDTO create(RestaurantDTO dto) {
+        String token = ""; //lo cogemos de un servicio de autenticacion!!!
+
+        RestaurantDTO restaurant;
+
+        try {
+            restaurant = webClientAPI
+                    .post()
+                    .uri("/restaurants")
+                    .bodyValue(dto)
+                    .retrieve()
+                    .bodyToMono(RestaurantDTO.class)
+                    .block(); //asíncrono
+        }catch (Exception e){
+            // Pendiente crear excepción propia
+            // Pendiente crear Globla ExceptionHancler: que lea la exceión y redirija a api-error
+            //
+            throw new ConnectionApiRestException("Could not connect to FoodExpress API to create restaurant");
+        }
+
+        return restaurant;
 
 
     }
