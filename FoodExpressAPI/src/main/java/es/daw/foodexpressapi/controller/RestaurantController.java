@@ -4,11 +4,11 @@ import es.daw.foodexpressapi.dto.RestaurantDTO;
 import es.daw.foodexpressapi.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/restaurants")
@@ -22,5 +22,15 @@ public class RestaurantController {
         return ResponseEntity.ok(restaurantService.getAllRestaurants());
 
     }
+
+     @PostMapping
+     @PreAuthorize("hasRole(ROLE)")
+    public ResponseEntity<RestaurantDTO> create(@RequestBody RestaurantDTO restaurantDTO) {
+        Optional<RestaurantDTO> result = restaurantService.create(restaurantDTO);
+        if (result.isPresent()) {
+            return ResponseEntity.ok(result.get());
+        }
+        return ResponseEntity.notFound().build();
+     }
 
 }

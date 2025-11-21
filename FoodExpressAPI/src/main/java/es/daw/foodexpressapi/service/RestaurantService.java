@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,12 +22,14 @@ public class RestaurantService {
 
     }
 
+    public Optional<RestaurantDTO> create(RestaurantDTO restaurantDTO){
+        Restaurant restaurant = toEntity(restaurantDTO);
+        Restaurant saved = restaurantRepository.save(restaurant);
+        return Optional.of(this.toDTO(saved));
+    }
+
+
     public RestaurantDTO toDTO(Restaurant restaurant){
-//        RestaurantDTO restaurantDTO = new RestaurantDTO();
-//        restaurantDTO.setName(restaurant.getName());
-//        restaurantDTO.setAddress(restaurant.getAddress());
-//        restaurantDTO.setPhone(restaurant.getPhone());
-//        return restaurantDTO;
         return RestaurantDTO.builder()
                 .name(restaurant.getName())
                 .address(restaurant.getAddress())
@@ -34,5 +37,12 @@ public class RestaurantService {
                 .build();
     }
 
+    public Restaurant toEntity(RestaurantDTO restaurantDTO){
+        Restaurant restaurant = new Restaurant();
+        restaurant.setName(restaurantDTO.getName());
+        restaurant.setAddress(restaurantDTO.getAddress());
+        restaurant.setPhone(restaurantDTO.getPhone());
+        return restaurant;
+    }
 
 }
