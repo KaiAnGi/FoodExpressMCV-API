@@ -49,8 +49,8 @@ public class SecurityConfig {
                 .headers(headers -> headers.frameOptions(frame -> frame.disable())) // permitir iframes (para H2)
                 // Esto actúa antes del controlador
                 .authorizeHttpRequests(auth -> auth
-                                .requestMatchers("/","/login","/h2-console/**").permitAll() // pública para login/register
-                                .anyRequest().authenticated()
+                        .requestMatchers("/","/login","/h2-console/**").permitAll() // pública para login/register
+                        .anyRequest().authenticated()
                 )
                 .formLogin(
                         login -> login
@@ -61,6 +61,8 @@ public class SecurityConfig {
                 )
                 .logout( logout -> logout
                         .logoutUrl("/logout")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
                         .logoutSuccessUrl("/")
                         .permitAll()
                 )

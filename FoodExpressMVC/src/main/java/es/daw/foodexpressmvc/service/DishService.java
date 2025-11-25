@@ -1,6 +1,6 @@
 package es.daw.foodexpressmvc.service;
 
-import es.daw.foodexpressmvc.dto.DishesDTO;
+import es.daw.foodexpressmvc.dto.DishDTO;
 import es.daw.foodexpressmvc.exception.ConnectionApiRestException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -11,20 +11,24 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Service
-public class DishesService {
+public class DishService {
 
     private final WebClient webClientAPI;
 
-    public List<DishesDTO> getAllDishes(){
+    /**
+     * Público. Sin jwt
+     * @return
+     */
+    public List<DishDTO> getAllDishes(){
 
-        DishesDTO[] dishes;
+        DishDTO[] dishes;
 
         try {
             dishes = webClientAPI
                     .get()
                     .uri("/dishes")
                     .retrieve()
-                    .bodyToMono(DishesDTO[].class)
+                    .bodyToMono(DishDTO[].class)
                     .block(); //asíncrono
         }catch (Exception e){
             // Pendiente crear excepción propia

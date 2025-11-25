@@ -1,7 +1,7 @@
 package es.daw.foodexpressmvc.controller;
 
-import es.daw.foodexpressmvc.dto.DishesDTO;
-import es.daw.foodexpressmvc.service.DishesService;
+import es.daw.foodexpressmvc.dto.DishDTO;
+import es.daw.foodexpressmvc.service.DishService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,18 +11,18 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-public class DishesController {
+public class DishController {
 
-    private final DishesService dishesService;
+    private final DishService dishService;
 
     @GetMapping("/dishes")
     public String listDishes(Model model) {
 
-        List<DishesDTO> dishes = dishesService.getAllDishes();
+        List<DishDTO> dishes = dishService.getAllDishes();
 
         model.addAttribute("dishes", dishes);
 
-        return "dishes";
+        return "dishes/dishes";
 
     }
 }
