@@ -3,6 +3,7 @@ package es.daw.foodexpressapi.controller;
 import es.daw.foodexpressapi.dto.RestaurantDTO;
 import es.daw.foodexpressapi.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -23,14 +24,41 @@ public class RestaurantController {
 
     }
 
-     @PostMapping
-     @PreAuthorize("hasRole(ROLE)")
+    // MEJORABLE, PORQUE EL SERVICIO NO DEVUELVE UN OPTIONAL..
+    @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<RestaurantDTO> create(@RequestBody RestaurantDTO restaurantDTO) {
+
         Optional<RestaurantDTO> result = restaurantService.create(restaurantDTO);
         if (result.isPresent()) {
-            return ResponseEntity.ok(result.get());
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(result.get());
         }
-        return ResponseEntity.notFound().build();
-     }
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        if (restaurantService.delete(id)) {
+            return ResponseEntity.noContent().build();  // 204 NO CONTENT
+        } else {
+            return ResponseEntity.notFound().build();   // 404 NOT FOUND
+        }
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/{id}")
+    public ResponseEntity<RestaurantDTO> update(@PathVariable Long id,
+                                                @RequestBody RestaurantDTO restaurantDTO) {
+
+        return ResponseEntity.ok(restaurantService.update(id, restaurantDTO));
+
+
+    }
+
 
 }
